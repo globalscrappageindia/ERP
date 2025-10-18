@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>RVSF Purchase Entry</title>
+<style>
+body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 24px; }
+.card { max-width: 760px; margin: 0 auto; padding: 20px; border: 1px solid #e5e7eb; border-radius: 12px; }
+h1 { margin-top: 0; }
+label { display:block; margin: 10px 0 4px; font-weight: 600; }
+input, select, textarea { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.muted { color:#6b7280; font-size: 12px; }
+.hint { font-size: 12px; color:#4b5563; }
+.actions { margin-top: 16px; display:flex; gap:12px; }
+button { padding: 10px 16px; border: 0; border-radius: 8px; cursor: pointer; }
+.primary { background:#111827; color:white; }
+.ghost { background:white; color:#111827; border:1px solid #d1d5db; }
+.pill { display:inline-block; padding:2px 8px; border-radius:999px; background:#f3f4f6; font-size:12px; margin-left:6px; }
+.hidden { display:none; }
+</style>
+</head>
+<body>
+<div class="card">
+<h1>Purchase Entry <span class="pill" id="splPreview">SPL will be assigned on save</span></h1>
+
+
+<form id="purchaseForm">
+<div class="row">
+<div>
+<label>Vehicle No. *</label>
+<input id="vehicle_no" required placeholder="e.g., PB10AB1234" />
+</div>
+<div>
+<label>Dealer</label>
+<select id="dealer"></select>
+<div class="hint">Manage list in the Sheet → Dealers</div>
+</div>
+</div>
+
+
+<div class="row">
+<div>
+<label>Make</label>
+<input id="make" placeholder="e.g., Maruti" />
+</div>
+<div>
+<label>Year</label>
+<input id="year" type="number" min="1950" max="2100" />
+</div>
+</div>
+
+
+<div class="row">
+<div>
+<label>Purchase Type *</label>
+<select id="purchase_type" required>
+<option value="SELF">SELF</option>
+<option value="AUTH">AUTH (Authorization)</option>
+</select>
+</div>
+<div>
+<label>Debit Note (AUTH only)</label>
+<input id="debit_note" type="checkbox" />
+</div>
