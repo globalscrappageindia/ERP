@@ -1,66 +1,238 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>RVSF Purchase Entry</title>
-<style>
-body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 24px; }
-.card { max-width: 760px; margin: 0 auto; padding: 20px; border: 1px solid #e5e7eb; border-radius: 12px; }
-h1 { margin-top: 0; }
-label { display:block; margin: 10px 0 4px; font-weight: 600; }
-input, select, textarea { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px; }
-.row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.muted { color:#6b7280; font-size: 12px; }
-.hint { font-size: 12px; color:#4b5563; }
-.actions { margin-top: 16px; display:flex; gap:12px; }
-button { padding: 10px 16px; border: 0; border-radius: 8px; cursor: pointer; }
-.primary { background:#111827; color:white; }
-.ghost { background:white; color:#111827; border:1px solid #d1d5db; }
-.pill { display:inline-block; padding:2px 8px; border-radius:999px; background:#f3f4f6; font-size:12px; margin-left:6px; }
-.hidden { display:none; }
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RVSF Purchase Entry</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; margin: 24px; background:#f9fafb; }
+    .card { max-width: 760px; margin: 0 auto; padding: 20px; background:white; border: 1px solid #e5e7eb; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    h1 { margin-top: 0; font-size: 24px; }
+    label { display:block; margin: 10px 0 4px; font-weight: 600; }
+    input, select, textarea { width: 100%; padding: 10px; border: 1px solid #d1d5db; border-radius: 8px; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .muted { color:#6b7280; font-size: 12px; }
+    .hint { font-size: 12px; color:#4b5563; }
+    .actions { margin-top: 16px; display:flex; gap:12px; }
+    button { padding: 10px 16px; border: 0; border-radius: 8px; cursor: pointer; font-size: 15px; }
+    .primary { background:#111827; color:white; }
+    .ghost { background:white; color:#111827; border:1px solid #d1d5db; }
+    .pill { display:inline-block; padding:2px 8px; border-radius:999px; background:#f3f4f6; font-size:12px; margin-left:6px; }
+    .hidden { display:none; }
+  </style>
 </head>
 <body>
-<div class="card">
-<h1>Purchase Entry <span class="pill" id="splPreview">SPL will be assigned on save</span></h1>
+  <div class="card">
+    <h1>Purchase Entry <span class="pill" id="splPreview">SPL will be assigned on save</span></h1>
 
+    <form id="purchaseForm">
+      <div class="row">
+        <div>
+          <label>Vehicle No. *</label>
+          <input id="vehicle_no" required placeholder="e.g., PB10AB1234" />
+        </div>
+        <div>
+          <label>Dealer</label>
+          <select id="dealer"></select>
+          <div class="hint">Manage list in Google Sheet → Dealers tab</div>
+        </div>
+      </div>
 
-<form id="purchaseForm">
-<div class="row">
-<div>
-<label>Vehicle No. *</label>
-<input id="vehicle_no" required placeholder="e.g., PB10AB1234" />
-</div>
-<div>
-<label>Dealer</label>
-<select id="dealer"></select>
-<div class="hint">Manage list in the Sheet → Dealers</div>
-</div>
-</div>
+      <div class="row">
+        <div>
+          <label>Make</label>
+          <input id="make" placeholder="e.g., Maruti" />
+        </div>
+        <div>
+          <label>Year</label>
+          <input id="year" type="number" min="1950" max="2100" />
+        </div>
+      </div>
 
+      <div class="row">
+        <div>
+          <label>Purchase Type *</label>
+          <select id="purchase_type" required>
+            <option value="SELF">SELF</option>
+            <option value="AUTH">AUTH (Authorization)</option>
+          </select>
+        </div>
+        <div>
+          <label>Debit Note (AUTH only)</label>
+          <input id="debit_note" type="checkbox" />
+        </div>
+      </div>
 
-<div class="row">
-<div>
-<label>Make</label>
-<input id="make" placeholder="e.g., Maruti" />
-</div>
-<div>
-<label>Year</label>
-<input id="year" type="number" min="1950" max="2100" />
-</div>
-</div>
+      <div class="row" id="selfFields">
+        <div>
+          <label>Owner Amount</label>
+          <input id="owner_amount" type="number" step="0.01" />
+        </div>
+        <div>
+          <label>Commission Amount</label>
+          <input id="commission_amount" type="number" step="0.01" />
+        </div>
+      </div>
 
+      <div class="row" id="authFields">
+        <div>
+          <label>Dealer/Authorized Amount</label>
+          <input id="dealer_amount" type="number" step="0.01" />
+        </div>
+        <div>
+          <label>Commission Amount</label>
+          <input id="commission_amount_auth" type="number" step="0.01" />
+        </div>
+      </div>
 
-<div class="row">
-<div>
-<label>Purchase Type *</label>
-<select id="purchase_type" required>
-<option value="SELF">SELF</option>
-<option value="AUTH">AUTH (Authorization)</option>
-</select>
-</div>
-<div>
-<label>Debit Note (AUTH only)</label>
-<input id="debit_note" type="checkbox" />
-</div>
+      <div class="row">
+        <div>
+          <label>COD Value</label>
+          <input id="cod_value" type="number" step="0.01" />
+        </div>
+        <div>
+          <label>Towing Charges</label>
+          <input id="towing_charges" type="number" step="0.01" />
+        </div>
+      </div>
+
+      <label>Notes</label>
+      <textarea id="notes" rows="3" placeholder="Optional"></textarea>
+
+      <div class="actions">
+        <button class="primary" type="submit">Save Entry</button>
+        <button class="ghost" type="button" id="resetBtn">Reset</button>
+        <div id="status" class="muted"></div>
+      </div>
+
+      <div class="muted" style="margin-top:8px;">Total (auto): <span id="totalDisplay">0</span></div>
+    </form>
+  </div>
+
+  <script>
+    // ✅ Your live Google Apps Script Web App URL
+    const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwPAjq-K9IUBLF0o5A-kJ5DIyCltc_hWUV0ZmMY090T19E_Liw0IFF6ECgaOWzRw-JMYg/exec";
+
+    const els = {
+      dealer: document.getElementById('dealer'),
+      vehicle_no: document.getElementById('vehicle_no'),
+      make: document.getElementById('make'),
+      year: document.getElementById('year'),
+      purchase_type: document.getElementById('purchase_type'),
+      debit_note: document.getElementById('debit_note'),
+      owner_amount: document.getElementById('owner_amount'),
+      dealer_amount: document.getElementById('dealer_amount'),
+      commission_amount_self: document.getElementById('commission_amount'),
+      commission_amount_auth: document.getElementById('commission_amount_auth'),
+      cod_value: document.getElementById('cod_value'),
+      towing_charges: document.getElementById('towing_charges'),
+      notes: document.getElementById('notes'),
+      totalDisplay: document.getElementById('totalDisplay'),
+      splPreview: document.getElementById('splPreview'),
+      selfFields: document.getElementById('selfFields'),
+      authFields: document.getElementById('authFields'),
+      form: document.getElementById('purchaseForm'),
+      status: document.getElementById('status'),
+      resetBtn: document.getElementById('resetBtn')
+    };
+
+    function n(x){ return isNaN(Number(x)) ? 0 : Number(x); }
+
+    function uiSync() {
+      const type = els.purchase_type.value;
+      const debit = els.debit_note.checked;
+      els.debit_note.disabled = (type !== 'AUTH');
+      if (type !== 'AUTH') els.debit_note.checked = false;
+      els.selfFields.classList.toggle('hidden', type !== 'SELF');
+      els.authFields.classList.toggle('hidden', type !== 'AUTH');
+      let total = 0;
+      if (type === 'AUTH' && debit) {
+        total = n(els.cod_value.value);
+      } else if (type === 'SELF') {
+        total = n(els.owner_amount.value) + n(els.commission_amount_self.value) + n(els.towing_charges.value);
+      } else {
+        total = n(els.dealer_amount.value) + n(els.commission_amount_auth.value) + n(els.towing_charges.value);
+      }
+      els.totalDisplay.textContent = total.toFixed(2);
+    }
+
+    async function loadDealers() {
+      try {
+        const r = await fetch(WEB_APP_URL + '?action=dealers');
+        const j = await r.json();
+        console.log("✅ Dealers fetched:", j.dealers);
+        els.dealer.innerHTML = '';
+        const empty = document.createElement('option');
+        empty.value = '';
+        empty.textContent = '— Select Dealer (optional) —';
+        els.dealer.appendChild(empty);
+        (j.dealers || []).forEach(name => {
+          const opt = document.createElement('option');
+          opt.value = name;
+          opt.textContent = name;
+          els.dealer.appendChild(opt);
+        });
+      } catch (e) {
+        console.warn('❌ Dealer load failed', e);
+      }
+    }
+
+    async function peekNextSpl() {
+      try {
+        const r = await fetch(WEB_APP_URL + '?action=nextspl');
+        const j = await r.json();
+        if (j && j.ok && j.nextSpl) els.splPreview.textContent = 'Next SPL: ' + j.nextSpl;
+      } catch (e) {}
+    }
+
+    els.purchase_type.addEventListener('change', uiSync);
+    els.debit_note.addEventListener('change', uiSync);
+    ['owner_amount','commission_amount','commission_amount_auth','dealer_amount','cod_value','towing_charges']
+      .forEach(id => (document.getElementById(id) || {}).addEventListener?.('input', uiSync));
+    els.resetBtn.addEventListener('click', () => { els.form.reset(); uiSync(); });
+
+    els.form.addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      els.status.textContent = 'Saving…';
+
+      const payload = {
+        vehicle_no: els.vehicle_no.value.trim(),
+        make: els.make.value.trim(),
+        year: els.year.value.trim(),
+        dealer: els.dealer.value.trim(),
+        purchase_type: els.purchase_type.value,
+        debit_note: els.debit_note.checked,
+        owner_amount: els.owner_amount.value,
+        dealer_amount: els.dealer_amount.value,
+        commission_amount: (els.purchase_type.value === 'SELF' ? els.commission_amount_self.value : els.commission_amount_auth.value),
+        cod_value: els.cod_value.value,
+        towing_charges: els.towing_charges.value,
+        notes: els.notes.value
+      };
+
+      try {
+        const r = await fetch(WEB_APP_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const j = await r.json();
+        if (j.ok) {
+          els.status.textContent = '✅ Saved! SPL #' + j.spl + ' | Total ₹' + Number(j.total).toFixed(2);
+          els.form.reset(); uiSync(); peekNextSpl();
+        } else {
+          els.status.textContent = '❌ Error: ' + j.error;
+        }
+      } catch (e) {
+        els.status.textContent = '🌐 Network error';
+      }
+    });
+
+    // ✅ Initialize on page load
+    uiSync();
+    loadDealers();
+    peekNextSpl();
+  </script>
+</body>
+</html>
+
